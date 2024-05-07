@@ -1,0 +1,107 @@
+//A probability distribution,average energy, specific heat, avg specific heat for two non degenerate system (E=5eV)
+clc;clf(0);clear
+E=5
+k=8.617e-5
+beeta=1e-30:0.05:2
+Z=1+exp(-beeta*E)
+P0=1./Z
+P1=exp(-beeta*E)./Z
+Energy=E*P1
+Cv=E^2*beeta^2.*P1./Z
+S=log(Z)+Energy.*beeta
+
+subplot(2,2,1)
+plot(beeta',P0','k-d','linewidth',2)
+plot(beeta',P1','k-o','linewidth',2)
+xlabel('$\beta (eV^{-1})$','fontsize',5)
+ylabel('Probability','fontsize',5)
+title("$\text{Probability Distribution for Two State Non Degenerate System }(\epsilon=5 eV)$",'fontsize',4)
+legend("$P_0$","$P_1$")
+
+subplot(2,2,2)
+plot(beeta',Energy','k-d','linewidth',2)
+xlabel('$\beta (eV^{-1})$','fontsize',5)
+ylabel('$\bar E (eV) $','fontsize',5)
+title("$\text{Average Energy for Two State Non Degenerate System }(\epsilon=5 eV)$",'fontsize',4)
+
+subplot(2,2,3)
+plot(beeta',Cv','k-d','linewidth',2)
+xlabel('$\beta (eV^{-1})$','fontsize',5)
+ylabel('$\frac{\bar C_v}{K_b}$','fontsize',5)
+title("$\text{Specific Heat for Two State Non Degenerate System }(\epsilon=5 eV)$",'fontsize',4)
+
+subplot(2,2,4)
+plot(beeta',S','k-d','linewidth',2)
+xlabel('$\beta (eV^{-1})$','fontsize',5)
+ylabel('$\frac{\bar S}{K_b}$','fontsize',5)
+title("$\text{Average Specific Heat for Two State Non Degenerate System }(\epsilon=5 eV)$",'fontsize',4)
+
+//B system of two particles (identical), 3 energy levels, En=nE. n=0,1,2. lower level double degenerate. sys in eq at T
+clc; clear; clf();
+e=1
+T=1:1:1e6
+k=8.6e-5
+bt=1./(k*T)
+
+zboson = 3+2*exp(-bt*e)+3*exp(-2*bt*e)+exp(-3*bt*e)+exp(-4*bt*e)
+zfermion=1+2*exp(-bt*e)+2*exp(-2*bt*e)+exp(-3*bt*e)
+
+dzb=-e*2*exp(-bt*e)-6*e*exp(-2*bt*e)-3*e*exp(-3*bt*e)-4*e*exp(-4*bt*e)
+dzf=-2*e*exp(-bt*e)-4*e*exp(-2*bt*e)-3*e*exp(-3*bt*e)
+
+Eboson=-dzb./zboson
+Efermion=-dzf./zfermion
+
+sboson=log(zboson)+Eboson.*bt
+sfermion=log(zfermion)+Efermion.*bt
+
+Cvboson=(bt.^2).*(dzb.^2+zboson.*(e*e*2*exp(-bt*e)+12*e*e*exp(-2*bt*e)+9*e*e*exp(-3*bt*e)+16*e*e*exp(-4*bt*e)))./(zboson.^2)
+Cvfermion=(bt.^2).*(dzf.^2+zfermion.*(e*e*2*exp(-bt*e)+8*e*e*exp(-2*bt*e)+9*e*e*exp(-3*bt*e)))./(zfermion.^2)
+
+subplot(2,3,1)
+plot(bt',[Eboson' Efermion'])
+replot([0 5;0 2.1])
+xlabel('$\beta (eV^{-1})$','fontsize',4)
+ylabel('$\frac{\bar E}{N} $','fontsize',4)
+title("$\text{Plot of Average Energy w.r.t  \beta}$",'fontsize',4)
+legend("Boson","Fermion")
+
+subplot(2,3,2)
+plot(T',[Eboson' Efermion'])
+replot([0 5e5;0 1.6])
+xlabel('$Temperature (K)$','fontsize',4)
+ylabel('$\frac{\bar E}{N} $','fontsize',4)
+title("$\text{Plot of Average Energy w.r.t Temperature}$",'fontsize',4)
+legend("Boson","Fermion")
+
+subplot(2,3,3)
+plot(bt',[sboson' sfermion'])
+replot([0 7;0 2.5])
+xlabel('$\beta (eV^{-1})$','fontsize',4)
+ylabel('$\frac{\bar S}{N*K_b}$','fontsize',4)
+title("$\text{Plot of Entropy w.r.t  \beta}$",'fontsize',4)
+legend("Boson","Fermion")
+
+subplot(2,3,4)
+plot(T',[sboson' sfermion'])
+replot([0 1e5;0 2.5])
+xlabel('$Temperature (K)$','fontsize',4)
+ylabel('$\frac{\bar S}{N*K_b}$','fontsize',4)
+title("$\text{Plot of Entropy w.r.t Temperature}$",'fontsize',4)
+legend("Boson","Fermion")
+
+subplot(2,3,5)
+plot(bt',[Cvboson' Cvfermion'])
+replot([0 10; 0 2])
+xlabel('$\beta (eV^{-1})$','fontsize',4)
+ylabel('$\frac{\bar C_v}{K_b}$','fontsize',4)
+title("$\text{Plot of Specific Heat w.r.t  \beta}$",'fontsize',4)
+legend("Boson","Fermion")
+
+subplot(2,3,6)
+plot(T',[Cvboson' Cvfermion'])
+replot([0 2e5;0 2])
+xlabel('$Temperature (K)$','fontsize',4)
+ylabel('$\frac{\bar C_v}{K_b}$','fontsize',4)
+title("$\text{Plot of Specific Heat w.r.t Temperature}$",'fontsize',4)
+legend("Boson","Fermion")
