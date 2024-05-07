@@ -1,0 +1,36 @@
+clc;clear;clf;
+k=1.38e-23;N=6e23;pi=3.14;
+v=0:1:3000; //speed in m/s
+T=300:300:900 //temp in K
+n=input("Enter the number of gases to be considered: ")
+for r=1:n
+name(r)=input("Enter the name of the gas: ","string")
+M=input("Enter the molar mass (g/mol) of "+string(name(r))+": ")
+m=M/(N*1000) //molecular weight in kg
+disp('Temp(K) vmp(f)    vav(f)        vrms(f)       vav(int)     vrms(int)')
+for j=1:length(T)
+    a=m/(2*k*T(j))
+    for i=1:length(v)
+       P(j,i)=(4*pi)*(a/pi)^1.5*(v(i)^2)*exp(-a*v(i)^2)
+    end
+    int1=2*P(j,1:2:$)*v(1:2:$)'
+    int2=4*P(j,2:2:$)*v(2:2:$)'
+    vavi(j)=(int1+int2)/3
+    //disp(vavi(j))
+    int3=2*P(j,1:2:$)*(v(1:2:$).^2)'
+    int4=4*P(j,2:2:$)*(v(2:2:$).^2)'
+    vrmsi(j)=sqrt((int3+int4)/3)
+    //disp(vrmsi(j))
+    [p,q]=max(P(j,:))
+    vmp=v(q)
+    vav=sqrt(4/pi)*vmp
+    vrms=sqrt(3/2)*vmp
+    disp([T(j) vmp vav vrms vavi(j) vrmsi(j)])
+end
+subplot(n,1,r)
+plot(v',P','linewidth',3)
+xlabel('v(m/s)','fontsize',5)
+ylabel('P(v)','fontsize',5)
+legend('T= '+string(T)+' K')
+title('Maxwell Speed Distribution Function for '+ string(name(r)),'fontsize',5)
+end
